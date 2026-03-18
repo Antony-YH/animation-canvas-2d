@@ -2,23 +2,21 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
 
-  /* Fondo con imagen */
   background: url("../img/fondo.jpg") no-repeat center center/cover;
   min-height: 100vh;
 }
 
-/* 🌫️ Glassmorphism */
+/* Glassmorphism */
 .glass {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 15px;
   border: 1px solid rgba(255,255,255,0.2);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   color: white;
 }
 
-/* Canvas centrado */
 canvas {
   margin-top: 20px;
 }

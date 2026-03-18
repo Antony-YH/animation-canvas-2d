@@ -7,23 +7,27 @@ let window_height = 400;
 canvas.width = window_width;
 canvas.height = window_height;
 
-// 🔹 Clase Circle
+// 🔹 Física (MEJORADA)
+const gravity = 0.5;
+const friction = 0.995;   // menos fricción = más movimiento
+const bounce = 0.85;      // más rebote 🔥
+
+let modoActual = "fisica";
+
 class Circle {
-  constructor(x, y, radius, color, speed) {
+  constructor(x, y, radius, color, dx, dy) {
     this.posX = x;
     this.posY = y;
     this.radius = radius;
     this.color = color;
-    this.speed = speed;
 
-    this.dx = (Math.random() < 0.5 ? -1 : 1) * this.speed;
-    this.dy = (Math.random() < 0.5 ? -1 : 1) * this.speed;
+    this.dx = dx;
+    this.dy = dy;
   }
 
   draw(context) {
     context.beginPath();
 
-    // 🎨 Efecto glass en círculo
     let gradient = context.createRadialGradient(
       this.posX, this.posY, this.radius * 0.2,
       this.posX, this.posY, this.radius
@@ -40,28 +44,59 @@ class Circle {
   }
 
   update(context) {
-    this.posX += this.dx;
-    this.posY += this.dy;
 
-    // Rebotes corregidos
-    if (this.posX + this.radius > window_width) {
-      this.posX = window_width - this.radius;
-      this.dx *= -1;
+    // 🔁 MODO CLÁSICO
+    if (modoActual === "clasico") {
+
+      this.posX += this.dx;
+      this.posY += this.dy;
+
+      if (this.posX + this.radius > window_width || this.posX - this.radius < 0) {
+        this.dx *= -1;
+      }
+
+      if (this.posY + this.radius > window_height || this.posY - this.radius < 0) {
+        this.dy *= -1;
+      }
     }
 
-    if (this.posX - this.radius < 0) {
-      this.posX = this.radius;
-      this.dx *= -1;
-    }
+    // 🎾 MODO FÍSICA MEJORADO
+    else {
 
-    if (this.posY + this.radius > window_height) {
-      this.posY = window_height - this.radius;
-      this.dy *= -1;
-    }
+      this.dy += gravity;
 
-    if (this.posY - this.radius < 0) {
-      this.posY = this.radius;
-      this.dy *= -1;
+      this.posX += this.dx;
+      this.posY += this.dy;
+
+      // Lados
+      if (this.posX + this.radius > window_width) {
+        this.posX = window_width - this.radius;
+        this.dx *= -bounce;
+      }
+
+      if (this.posX - this.radius < 0) {
+        this.posX = this.radius;
+        this.dx *= -bounce;
+      }
+
+      // Suelo (rebote fuerte)
+      if (this.posY + this.radius > window_height) {
+        this.posY = window_height - this.radius;
+        this.dy *= -bounce;
+
+        // fricción leve
+        this.dx *= friction;
+      }
+
+      // Techo
+      if (this.posY - this.radius < 0) {
+        this.posY = this.radius;
+        this.dy *= -bounce;
+      }
+
+      // 🔥 Mejora: evitar que se detengan demasiado rápido
+      if (Math.abs(this.dy) < 0.5) this.dy = 0;
+      if (Math.abs(this.dx) < 0.05) this.dx = 0;
     }
 
     this.draw(context);
@@ -70,20 +105,55 @@ class Circle {
 
 let circles = [];
 
-// 🔹 Generar círculos
-function generarCirculos(cantidad) {
+// 🔹 Generación (sin cambios)
+function generarCirculos(cantidad, efecto) {
   circles = [];
 
   for (let i = 0; i < cantidad; i++) {
-    let radius = Math.random() * 30 + 20;
+    let radius = Math.random() * 20 + 15;
+    let color = `hsla(${Math.random() * 360},70%,60%,0.5)`;
 
-    let x = Math.random() * (window_width - 2 * radius) + radius;
-    let y = Math.random() * (window_height - 2 * radius) + radius;
+    let x, y, dx, dy;
 
-    let color = `hsla(${Math.random() * 360}, 70%, 60%, 0.4)`;
-    let speed = Math.random() * 3 + 1;
+    switch (efecto) {
+      case "top-left":
+        x = radius; y = radius;
+        dx = Math.random() * 5 + 2;
+        dy = Math.random() * 2;
+        break;
 
-    circles.push(new Circle(x, y, radius, color, speed));
+      case "top-right":
+        x = window_width - radius; y = radius;
+        dx = -(Math.random() * 5 + 2);
+        dy = Math.random() * 2;
+        break;
+
+      case "bottom-left":
+        x = radius; y = window_height - radius;
+        dx = Math.random() * 5 + 2;
+        dy = -(Math.random() * 5);
+        break;
+
+      case "bottom-right":
+        x = window_width - radius; y = window_height - radius;
+        dx = -(Math.random() * 5 + 2);
+        dy = -(Math.random() * 5);
+        break;
+
+      case "top":
+        x = Math.random() * window_width; y = radius;
+        dx = (Math.random() - 0.5) * 6;
+        dy = Math.random() * 2;
+        break;
+
+      case "bottom":
+        x = Math.random() * window_width; y = window_height - radius;
+        dx = (Math.random() - 0.5) * 6;
+        dy = -(Math.random() * 5);
+        break;
+    }
+
+    circles.push(new Circle(x, y, radius, color, dx, dy));
   }
 }
 
@@ -97,11 +167,16 @@ function animate() {
 
 animate();
 
-// 🔹 Evento botón
+// 🔹 Evento
 document.getElementById("generar").addEventListener("click", () => {
+
   const cantidad = parseInt(document.getElementById("cantidad").value);
   const ancho = parseInt(document.getElementById("ancho").value);
   const alto = parseInt(document.getElementById("alto").value);
+  const efecto = document.getElementById("efecto").value;
+  const modo = document.getElementById("modo").value;
+
+  modoActual = modo;
 
   window_width = ancho;
   window_height = alto;
@@ -109,9 +184,8 @@ document.getElementById("generar").addEventListener("click", () => {
   canvas.width = window_width;
   canvas.height = window_height;
 
-  generarCirculos(cantidad);
+  generarCirculos(cantidad, efecto);
 });
 
 // Inicial
-generarCirculos(5);
-
+generarCirculos(5, "top-left");
