@@ -1,107 +1,117 @@
 const canvas = document.getElementById("canvas");
-let ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-//Dimensiones
-const window_height = window.innerHeight / 2;
-const window_width = window.innerWidth / 2;
+let window_width = 800;
+let window_height = 400;
 
-canvas.height = window_height;
 canvas.width = window_width;
+canvas.height = window_height;
 
-canvas.style.background = "#ff8";
-
+// 🔹 Clase Circle
 class Circle {
-  constructor(x, y, radius, color, text, speed) {
+  constructor(x, y, radius, color, speed) {
     this.posX = x;
     this.posY = y;
     this.radius = radius;
     this.color = color;
-    this.text = text;
-
     this.speed = speed;
 
-    this.dx = 1 * this.speed;
-    this.dy = 1 * this.speed;
+    this.dx = (Math.random() < 0.5 ? -1 : 1) * this.speed;
+    this.dy = (Math.random() < 0.5 ? -1 : 1) * this.speed;
   }
 
   draw(context) {
     context.beginPath();
 
-    context.strokeStyle = this.color;
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.font = "20px Arial";
-    context.fillText(this.text, this.posX, this.posY);
+    // 🎨 Efecto glass en círculo
+    let gradient = context.createRadialGradient(
+      this.posX, this.posY, this.radius * 0.2,
+      this.posX, this.posY, this.radius
+    );
 
-    context.lineWidth = 2;
+    gradient.addColorStop(0, "rgba(255,255,255,0.8)");
+    gradient.addColorStop(1, this.color);
+
+    context.fillStyle = gradient;
     context.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2);
-    context.stroke();
+    context.fill();
+
     context.closePath();
   }
 
   update(context) {
-    // 🔹 Primero mover
     this.posX += this.dx;
     this.posY += this.dy;
 
-    // 🔹 Rebote con corrección de posición
-
-    // Derecha
+    // Rebotes corregidos
     if (this.posX + this.radius > window_width) {
       this.posX = window_width - this.radius;
       this.dx *= -1;
     }
 
-    // Izquierda
     if (this.posX - this.radius < 0) {
       this.posX = this.radius;
       this.dx *= -1;
     }
 
-    // Abajo
     if (this.posY + this.radius > window_height) {
       this.posY = window_height - this.radius;
       this.dy *= -1;
     }
 
-    // Arriba
     if (this.posY - this.radius < 0) {
       this.posY = this.radius;
       this.dy *= -1;
     }
 
-    // 🔹 Dibujar
     this.draw(context);
   }
 }
 
-// 🔹 Crear círculos (mejor con posiciones distintas)
-let miCirculo = new Circle(
-  Math.random() * window_width,
-  Math.random() * window_height,
-  50,
-  "blue",
-  "Tec1",
-  5
-);
+let circles = [];
 
-let miCirculo2 = new Circle(
-  Math.random() * window_width,
-  Math.random() * window_height,
-  40,
-  "red",
-  "Tec2",
-  2
-);
+// 🔹 Generar círculos
+function generarCirculos(cantidad) {
+  circles = [];
 
-// 🔹 Animación
-function updateCircle() {
-  requestAnimationFrame(updateCircle);
-  ctx.clearRect(0, 0, window_width, window_height);
+  for (let i = 0; i < cantidad; i++) {
+    let radius = Math.random() * 30 + 20;
 
-  miCirculo.update(ctx);
-  miCirculo2.update(ctx);
+    let x = Math.random() * (window_width - 2 * radius) + radius;
+    let y = Math.random() * (window_height - 2 * radius) + radius;
+
+    let color = `hsla(${Math.random() * 360}, 70%, 60%, 0.4)`;
+    let speed = Math.random() * 3 + 1;
+
+    circles.push(new Circle(x, y, radius, color, speed));
+  }
 }
 
-updateCircle();
+// 🔹 Animación
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, window_width, window_height);
+
+  circles.forEach(c => c.update(ctx));
+}
+
+animate();
+
+// 🔹 Evento botón
+document.getElementById("generar").addEventListener("click", () => {
+  const cantidad = parseInt(document.getElementById("cantidad").value);
+  const ancho = parseInt(document.getElementById("ancho").value);
+  const alto = parseInt(document.getElementById("alto").value);
+
+  window_width = ancho;
+  window_height = alto;
+
+  canvas.width = window_width;
+  canvas.height = window_height;
+
+  generarCirculos(cantidad);
+});
+
+// Inicial
+generarCirculos(5);
 
