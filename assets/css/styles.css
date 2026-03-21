@@ -19,3 +19,26 @@ body {
 canvas {
   margin-top: 20px;
 }
+
+/* Pequeños ajustes para que los componentes de Bootstrap 
+no rompan tu estética original de cristal */
+.form-control, .form-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+.form-control:focus, .form-select:focus {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+option { background: #222; color: white; }
+    
+.navbar-brand { font-weight: bold; letter-spacing: 1px; }
