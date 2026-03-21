@@ -42,6 +42,7 @@ animation-canvas/
 │   └── 📂 js/
 │       └── ⚡ main.js      # Motor físico y lógica de animación
 └── 📄 README.md            # Documentación del proyecto
+```
 
 
 💻 Instalación y Uso
