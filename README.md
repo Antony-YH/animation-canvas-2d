@@ -1,70 +1,82 @@
-✨ Canvas Glass App
-Una aplicación web interactiva que combina la potencia de HTML5 Canvas con una estética moderna de Glassmorphism. Este simulador permite generar partículas circulares con comportamientos físicos personalizables, como gravedad, rebote y fricción.
+# 🔵 Canvas Glass App
 
-🚀 Características
-Simulación de Física: Implementación de gravedad real, coeficientes de rebote y fricción para un movimiento natural.
+![Versión](https://img.shields.io/badge/Versión-1.0.0-blue)
+![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
+![Año](https://img.shields.io/badge/Año-2026-orange)
 
-Dos Modos de Simulación:
+Una experiencia visual interactiva construida con **HTML5 Canvas** y un motor de física personalizado en **JavaScript**. La aplicación utiliza una estética **Glassmorphism** (vidrio esmerilado) para ofrecer una interfaz moderna y elegante.
 
-🍎 Gravedad Realista: Las partículas caen y rebotan perdiendo energía.
+---
 
-♾️ Rebote Infinito: Estilo clásico de protector de pantalla donde la velocidad es constante.
+## 📸 Vista Previa del Proyecto
 
-Personalización en Tiempo Real: * Cambia la cantidad de círculos (hasta 100).
+| Característica | Descripción |
+| :--- | :--- |
+| **Interfaz** | Diseño basado en capas de cristal con `backdrop-filter`. |
+| **Física** | Simulación de gravedad, rebote (`bounce`) y fricción. |
+| **Personalización** | Control total sobre cantidad, tamaño y origen de partículas. |
+| **Modos** | Alterna entre Gravedad Realista 🍎 y Rebote Infinito ♾️. |
 
-Ajusta las dimensiones del área de simulación (Canvas).
+---
 
-Selecciona 6 puntos de aparición distintos (esquinas, arriba o abajo).
+## 🛠️ Tecnologías Utilizadas
 
-Diseño Moderno: Interfaz ultra-limpia basada en efectos de desenfoque (backdrop-filter) y transparencia.
+* **HTML5 & Canvas API:** Motor de renderizado 2D para las partículas.
+* **JavaScript (ES6):** Lógica de clases para la física de los círculos.
+* **Bootstrap 5:** Estructura responsiva y componentes de interfaz.
+* **CSS3 Custom:** Efectos de desenfoque y gradientes dinámicos.
 
-🛠️ Estructura del Proyecto
-Basado en la organización de archivos actual:
+---
 
-Plaintext
+## 📂 Estructura de Archivos
+
+```text
 animation-canvas/
-├── assets/
-│   ├── css/
-│   │   └── styles.css      # Estilos personalizados y Glassmorphism
-│   ├── img/
-│   │   ├── favicon.png     # Icono de la página
-│   │   └── fondo.jpg       # Imagen de fondo principal
-│   └── js/
-│       └── main.js         # Lógica del motor físico y renderizado
-├── index.html              # Estructura principal
-└── README.md               # Documentación
+├── 📄 index.html           # Estructura principal y componentes UI
+├── 📂 assets/
+│   ├── 📂 css/
+│   │   └── 🎨 styles.css    # Estilos Glassmorphism y overrides
+│   ├── 📂 img/
+│   │   ├── 🖼️ fondo.jpg     # Imagen de fondo (Wallpaper)
+│   │   └── 🏷️ favicon.png   # Icono de la aplicación
+│   └── 📂 js/
+│       └── ⚡ main.js      # Motor físico y lógica de animación
+└── 📄 README.md            # Documentación del proyecto
+
 
 💻 Instalación y Uso
-Clona este repositorio o descarga los archivos.
+Clonación: Descarga o clona este repositorio.
 
-Asegúrate de mantener la estructura de carpetas (assets/css, assets/js, etc.).
+Preparación: Asegúrate de que la ruta de la imagen de fondo en styles.css sea correcta (../img/fondo.jpg).
 
-Abre el archivo index.html en cualquier navegador moderno.
+Ejecución: Abre el archivo index.html directamente en tu navegador.
 
-¡Configura los parámetros y haz clic en APLICAR SIMULACIÓN!
+Interacción: * Cambia los valores en el panel superior.
 
-🧬 Detalles Técnicos
-El Motor de Partículas
-La clase Circle en main.js gestiona tanto el renderizado como la lógica matemática:
+Pulsa APLICAR SIMULACIÓN para resetear el canvas con la nueva configuración.
 
-Gradientes Radiales: Cada círculo tiene un degradado dinámico para simular iluminación 3D.
 
-Manejo de Colisiones: Se detectan los límites del Canvas para invertir vectores de velocidad con una pérdida controlada de energía (bounce).
+🧬 Detalles del Motor Físico
+El núcleo de la aplicación utiliza una clase Circle que gestiona su propio estado. Los parámetros físicos configurados son:
 
-Optimización: Incluye umbrales mínimos de velocidad para evitar cálculos innecesarios cuando las partículas están casi en reposo.
+[!IMPORTANT]
+Gravedad: 0.5 (Aceleración constante en el eje Y).
 
-Estilos (Glassmorphism)
-El efecto de "vidrio" se logra mediante CSS avanzado:
+Rebote (Bounce): 0.85 (Conserva el 85% de la fuerza tras un impacto).
 
-CSS
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.2);
-}
+Fricción: 0.995 (Reduce la velocidad lateral gradualmente al tocar el suelo).
+
+JavaScript:
+
+// Ejemplo de renderizado dinámico con iluminación 3D
+let gradient = context.createRadialGradient(
+  this.posX, this.posY, this.radius * 0.2,
+  this.posX, this.posY, this.radius
+);
+gradient.addColorStop(0, "rgba(255,255,255,0.8)"); // Punto de luz
+gradient.addColorStop(1, this.color);              // Color base
+
 
 👤 Autor
-Antonio Yañez Hernandez
-Año: 2026
-
-Desarrollado como proyecto de experimentación con Canvas API y Bootstrap 5.
+Desarrollado por Antonio Yañez Hernandez | 2026 
+Materia: Graficación.
